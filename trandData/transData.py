@@ -80,6 +80,20 @@ pd_rows = gt_teamResult(sheet_data)
 
 # Pandas 출력
 matchdata = pd.DataFrame(pd_rows, columns= ["team","name"])
-matchdata['mNum'] = match_Num
-matchdata['mDate'] = match_Date
+matchdata['mnum'] = match_Num
+matchdata['mdate'] = match_Date
 print(matchdata)
+
+# DB ORM 연결, 패스워드 특수문자 치환 #
+engine = create_engine('postgresql://app_fs:%s@localhost:5432/db_fs' % quote('pok1234@'),echo = True) 
+#engine.execute("DROP TABLE IF EXISTS public.tb_test;") # drop table if exists
+# data to DBMS Table #
+matchdata.to_sql(
+         name = 'tb_test',
+         con = engine,
+         schema = 'public',
+         if_exists = 'append',
+         index = False
+         )
+
+engine.dispose()
