@@ -1,5 +1,6 @@
 import os
 import sys
+import datetime
 import gspread
 import pandas as pd
 from oauth2client.service_account import ServiceAccountCredentials
@@ -21,8 +22,12 @@ def gt_teamResult(st_data):
     for x in range(3,30):
         if st_data[x][20] == '':
             break
-        extend_row = list(st_data[x][20:22])
-        rows.append(extend_row)
+        else:
+            if st_data[x][21] == '':
+                pass
+            else:
+                extend_row = list(st_data[x][20:22])
+                rows.append(extend_row)
     return rows    
 
 ## Function ## Match Data Insert
@@ -33,7 +38,6 @@ def Insert_gameresult(game_data):
 ## Function ## Player and Team
 # def Insert_playerpick(team_result):
 #     pick_data = game_data
-
 
 # Google API 연결 설정 #
 scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive',]
@@ -55,6 +59,10 @@ print("List of URLS updated")
 
 # 구글시트 url 리스트 #
 spreadsheet_url = url_data[0][0] # 1경기 URL
+match_NumAndDate = url_data[0][1]
+match_Num = match_NumAndDate[:3]
+format = '%Y-%m-%d'
+match_Date = datetime.datetime.strptime(match_NumAndDate[-8:], "%Y%m%d").date()
 
 # 스프레스시트 문서 가져오기
 doc = gc.open_by_url(spreadsheet_url)
@@ -62,8 +70,7 @@ worksheet = doc.sheet1  ## 시트 선택하기
 sheet_data = worksheet.get_all_values()  ## 시트 전체 값을 List of List 로 저장
 
 # 3번째 행을 header로 지정
-header = sheet_data[2][20:22]
-#header = sheet_data[2][0:15]
+#header = sheet_data[2][20:22]
 
 # Team Select 결과 #
 team_result = list(sheet_data[20:22])
@@ -72,6 +79,7 @@ team_result = list(sheet_data[20:22])
 pd_rows = gt_teamResult(sheet_data)
 
 # Pandas 출력
-matchdata = pd.DataFrame(pd_rows, columns=header)
-matchdata
-matchdata.head()
+matchdata = pd.DataFrame(pd_rows, columns= ["team","name"])
+matchdata['mNum'] = match_Num
+matchdata['mDate'] = match_Date
+print(matchdata)
