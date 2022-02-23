@@ -4,8 +4,10 @@ import datetime
 import gspread
 import pandas as pd
 from oauth2client.service_account import ServiceAccountCredentials
+from urllib.parse import quote
 import psycopg2
-from sqlalchemy import null
+import sqlalchemy
+from sqlalchemy import create_engine
 
 ## Function ## match result 유효한 데이터 값만 가져오기
 def gt_matchResult(st_data):
