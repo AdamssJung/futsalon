@@ -31,6 +31,25 @@ def gt_matchSummary(st_data):
                 rows.append(extend_row)
     return rows    
 
+def insert_matchSummary(pd_rows, match_Num, match_Date):
+    matchdata = pd.DataFrame(pd_rows, columns= ["team","name","win","draw","lose","득점","실점","goal","assist"])
+    matchdata.insert(0,'mnum',match_Num)
+    matchdata.insert(1,'mdate',match_Date)
+    print(matchdata)
+
+    # DB ORM 연결, 패스워드 특수문자 치환 #
+    engine = create_engine('postgresql://app_fs:%s@localhost:5432/db_fs' % quote('pok1234@'),echo = True) 
+    # engine.execute("DROP TABLE IF EXISTS public.tb_test;") # drop table if exists
+    # data insert to DBMS Table #
+    matchdata.to_sql(
+            name = 'tb_matchsummary',
+            con = engine,
+            schema = 'public',
+            if_exists = 'append',
+            index = False
+            )
+    engine.dispose()
+    return
 
 # Google API 연결 설정 #
 scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive',]
@@ -44,7 +63,6 @@ gc = gspread.authorize(credentials)
 engine = create_engine('postgresql://app_fs:%s@localhost:5432/db_fs' % quote('pok1234@'),echo = True) 
 result = engine.execute("select * from tb_sheeturls")
 url_data = result.fetchall()
-print(url_data)
 engine.dispose()
 
 # 구글시트 url 리스트 #
@@ -59,30 +77,9 @@ doc = gc.open_by_url(spreadsheet_url)
 worksheet = doc.sheet1  ## 시트 선택하기
 sheet_data = worksheet.get_all_values()  ## 시트 전체 값을 List of List 로 저장
 
-# 3번째 행을 header로 지정
-#header = sheet_data[2][20:22]
-
-#pd_rows = gt_matchResult(sheet_data)
+# matchSummary Pandas에 저장 #
 pd_rows = gt_matchSummary(sheet_data)
 
-# Pandas 출력
-matchdata = pd.DataFrame(pd_rows, columns= ["team","name","win","draw","lose","득점","실점","goal","assist"])
-matchdata.insert(0,'mnum',match_Num)
-matchdata.insert(1,'mdate',match_Date)
-#matchdata['mnum'] = match_Num
-#matchdata['mdate'] = match_Date
-print(matchdata)
+# DB Insert #
+insert_matchSummary(pd_rows, match_Num, match_Date)
 
-# DB ORM 연결, 패스워드 특수문자 치환 #
-engine = create_engine('postgresql://app_fs:%s@localhost:5432/db_fs' % quote('pok1234@'),echo = True) 
-#engine.execute("DROP TABLE IF EXISTS public.tb_test;") # drop table if exists
-# data to DBMS Table #
-matchdata.to_sql(
-         name = 'tb_test',
-         con = engine,
-         schema = 'public',
-         if_exists = 'append',
-         index = False
-         )
-
-engine.dispose()
