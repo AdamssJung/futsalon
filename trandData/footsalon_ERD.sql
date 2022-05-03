@@ -40,45 +40,31 @@ CREATE TABLE "match_result" (
   "assist1" varchar,
   "goal2" varchar,
   "Assist2" varchar,
-  "Goal3" varchar,
-  "Assist3" varchar
+  "goal3" varchar,
+  "assist3" varchar
 );
 
+create table "tb_matchsummary" (
+"match_id" varchar,
+"team" varchar,
+"name" varchar,
+"win" int,
+"draw" int,
+"lost" int,
+"GF" int,
+"GA" int
+); 
+
 CREATE TABLE "mom" (
-  "mom_id" int SERIAL PRIMARY KEY,
+  "mom_id" SERIAL PRIMARY KEY,
+  "match_id" int,
   "name" varchar,
   "vote" varchar
 );
 
-CREATE TABLE "products" (
-  "id" int PRIMARY KEY,
-  "name" varchar,
-  "merchant_id" int NOT NULL,
-  "price" int,
-  "status" products_status,
-  "created_at" datetime DEFAULT (now())
-);
-
-CREATE TABLE "merchants" (
-  "id" int,
-
-);
-
-
 ALTER TABLE "awards" ADD FOREIGN KEY ("player_id") REFERENCES "players" ("id");
-
 ALTER TABLE "awards" ADD FOREIGN KEY ("season") REFERENCES "matchinfohistory" ("season");
-
 ALTER TABLE "match_result" ADD FOREIGN KEY ("match_id") REFERENCES "matchinfohistory" ("match_id");
-
+ALTER TABLE "tb_matchsummary" ADD FOREIGN KEY ("match_id") REFERENCES "matchinfohistory" ("match_id");
 ALTER TABLE "mom" ADD FOREIGN KEY ("name") REFERENCES "players" ("name");
-
-ALTER TABLE "merchants" ADD FOREIGN KEY ("admin_id") REFERENCES "users" ("id");
-
-ALTER TABLE "products" ADD FOREIGN KEY ("merchant_id") REFERENCES "merchants" ("id");
-
-CREATE INDEX "product_status" ON "products" ("merchant_id", "status");
-
-CREATE UNIQUE INDEX ON "products" ("id");
-
-COMMENT ON COLUMN "orders"."created_at" IS 'When order created';
+ALTER TABLE "mom" ADD FOREIGN KEY ("match_id") REFERENCES "matchinfohistory" ("match_id");
