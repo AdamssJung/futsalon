@@ -82,4 +82,3 @@ pd_rows = gt_matchSummary(sheet_data)
 
 # DB Insert #
 insert_matchSummary(pd_rows, match_Num, match_Date)
-
