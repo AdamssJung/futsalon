@@ -1,14 +1,13 @@
 ## Footsalon ERD ##
-CREATE TABLE "players" (
+CREATE TABLE "tb_players" (
   "id" SERIAL PRIMARY KEY,
   "name" varchar,
-  "created_at" timestamp,
   "joined at" varchar,
   "mobile" int,
-  "bod" datetime
+  "bod" date
 );
 
-CREATE TABLE "matchinfohistory" (
+CREATE TABLE "tb_matchinfohistory" (
   "match_id" varchar PRIMARY KEY,
   "season" varchar,
   "match_num" int,
@@ -19,14 +18,14 @@ CREATE TABLE "matchinfohistory" (
 
 CREATE index index_season_mnum on matchinfohistory (season, match_num);
 
-CREATE TABLE "awards" (
+CREATE TABLE "tb_awards" (
   "season" varchar,
   "award" varchar,
   "player_id" varchar,
   "prize" varchar
 );
 
-CREATE TABLE "match_result" (
+CREATE TABLE "tb_match_result" (
   "game_id" varchar PRIMARY KEY,
   "match_id" varchar,
   "hTeam" varchar,
@@ -58,17 +57,16 @@ create table "tb_matchsummary" (
 "GA" int
 ); 
 
-CREATE TABLE "mom" (
+CREATE TABLE "tb_mom" (
   "mom_id" SERIAL PRIMARY KEY,
   "match_id" varchar,
   "name" varchar,
   "vote" varchar
 );
 
-ALTER TABLE "awards" ADD FOREIGN KEY ("player_id") REFERENCES "players" ("id");
-ALTER TABLE "awards" ADD FOREIGN KEY ("season") REFERENCES "matchinfohistory" ("season");
-ALTER TABLE "match_result" ADD FOREIGN KEY ("match_id") REFERENCES "matchinfohistory" ("match_id");
-ALTER TABLE "tb_GoalHistory" ADD FOREIGN KEY ("match_id") REFERENCES "matchinfohistory" ("match_id");
-ALTER TABLE "tb_matchsummary" ADD FOREIGN KEY ("match_id") REFERENCES "matchinfohistory" ("match_id");
-ALTER TABLE "mom" ADD FOREIGN KEY ("name") REFERENCES "players" ("name");
-ALTER TABLE "mom" ADD FOREIGN KEY ("match_id") REFERENCES "matchinfohistory" ("match_id");
+ALTER TABLE "tb_awards" ADD FOREIGN KEY ("player_id") REFERENCES "tb_players" ("id");
+ALTER TABLE "tb_awards" ADD FOREIGN KEY ("season") REFERENCES "tb_matchinfohistory" ("season");
+ALTER TABLE "tb_match_result" ADD FOREIGN KEY ("match_id") REFERENCES "tb_matchinfohistory" ("match_id");
+ALTER TABLE "tb_GoalHistory" ADD FOREIGN KEY ("match_id") REFERENCES "tb_matchinfohistory" ("match_id");
+ALTER TABLE "tb_matchsummary" ADD FOREIGN KEY ("match_id") REFERENCES "tb_matchinfohistory" ("match_id");
+ALTER TABLE "tb_mom" ADD FOREIGN KEY ("match_id") REFERENCES "tb_matchinfohistory" ("match_id");
