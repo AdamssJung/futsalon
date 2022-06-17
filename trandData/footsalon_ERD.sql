@@ -1,3 +1,4 @@
+## Footsalon ERD ##
 CREATE TABLE "players" (
   "id" SERIAL PRIMARY KEY,
   "name" varchar,
