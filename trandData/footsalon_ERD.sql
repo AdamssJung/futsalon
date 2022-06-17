@@ -8,7 +8,7 @@ CREATE TABLE "players" (
 );
 
 CREATE TABLE "matchinfohistory" (
-  "match_id" SERIAL PRIMARY KEY,
+  "match_id" varchar PRIMARY KEY,
   "season" varchar,
   "match_num" int,
   "match_date" date,
@@ -26,8 +26,8 @@ CREATE TABLE "awards" (
 );
 
 CREATE TABLE "match_result" (
-  "match_id" int,
-  "game_num" int,
+  "game_id" varchar PRIMARY KEY,
+  "match_id" varchar,
   "hTeam" varchar,
   "htScore" int,
   "htHelper" varchar,
@@ -36,16 +36,18 @@ CREATE TABLE "match_result" (
   "atScore" integer,
   "atHelper" varchar,
   "atKeep" varchar,
-  "goal1" varchar,
-  "assist1" varchar,
-  "goal2" varchar,
-  "Assist2" varchar,
-  "goal3" varchar,
-  "assist3" varchar
+);
+
+CREATE TABLE "tb_Score" (
+  "goal_id" SERIAL PRIMARY KEY,
+  "match_id" varchar,
+  "game_id" varchar,
+  "goal" varchar,
+  "assist" varchar,
 );
 
 create table "tb_matchsummary" (
-"match_id" varchar,
+"match_id" varchar PRIMARY KEY,
 "team" varchar,
 "name" varchar,
 "win" int,
@@ -57,7 +59,7 @@ create table "tb_matchsummary" (
 
 CREATE TABLE "mom" (
   "mom_id" SERIAL PRIMARY KEY,
-  "match_id" int,
+  "match_id" varchar,
   "name" varchar,
   "vote" varchar
 );
@@ -65,6 +67,7 @@ CREATE TABLE "mom" (
 ALTER TABLE "awards" ADD FOREIGN KEY ("player_id") REFERENCES "players" ("id");
 ALTER TABLE "awards" ADD FOREIGN KEY ("season") REFERENCES "matchinfohistory" ("season");
 ALTER TABLE "match_result" ADD FOREIGN KEY ("match_id") REFERENCES "matchinfohistory" ("match_id");
+ALTER TABLE "tb_GoalHistory" ADD FOREIGN KEY ("match_id") REFERENCES "matchinfohistory" ("match_id");
 ALTER TABLE "tb_matchsummary" ADD FOREIGN KEY ("match_id") REFERENCES "matchinfohistory" ("match_id");
 ALTER TABLE "mom" ADD FOREIGN KEY ("name") REFERENCES "players" ("name");
 ALTER TABLE "mom" ADD FOREIGN KEY ("match_id") REFERENCES "matchinfohistory" ("match_id");
