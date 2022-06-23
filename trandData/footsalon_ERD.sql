@@ -28,11 +28,11 @@ CREATE TABLE "tb_awards" (
 CREATE TABLE "tb_match_result" (
   "game_id" varchar PRIMARY KEY,
   "match_id" varchar,
-  "hTeam" varchar,
+  "homeTeam" varchar,
   "htScore" int,
   "htHelper" varchar,
   "htKeep "varchar,
-  "ATeam" varchar,
+  "awayTeam" varchar,
   "atScore" integer,
   "atHelper" varchar,
   "atKeep" varchar,
@@ -52,9 +52,7 @@ create table "tb_matchsummary" (
 "name" varchar,
 "win" int,
 "draw" int,
-"lost" int,
-"GF" int,
-"GA" int
+"lost" int
 ); 
 
 CREATE TABLE "tb_mom" (

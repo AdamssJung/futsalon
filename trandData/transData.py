@@ -11,28 +11,32 @@ from sqlalchemy import select
 ## Function ## match result 유효한 데이터 값만 가져오기
 def gt_matchRecord(st_data):
     rows = list()
-    for x in range(3,30):
-        if st_data[x][2] == '-':
+    for x in range(3,30): 
+        if st_data[x][2] == '-': ## 유효한 경기까지만 데이터 가져오기
             break
-        extend_row = list(st_data[x][0:15])
+        extend_row = list(st_data[x][0:15]) ## S 열까지 데이터 가져오기
         rows.append(extend_row)
     return rows
 
+## Function ## matchSummary 유효한 데이터 값만 가져오기
 def gt_matchSummary(st_data):
     rows = list()
     for x in range(3,30):
+        ## 팀이 비어있으면 for문 종료
         if st_data[x][20] == '':
             break
+        ## 팀명단 가져오기
         else:
             if st_data[x][21] == '':
                 pass
+            ## summary 데이터 가져오기
             else:
                 extend_row = list(st_data[x][20:29])
                 rows.append(extend_row)
     return rows    
 
 def insert_matchSummary(pd_rows, match_Num, match_Date):
-    matchdata = pd.DataFrame(pd_rows, columns= ["team","name","win","draw","lose","득점","실점","goal","assist"])
+    matchdata = pd.DataFrame(pd_rows, columns= ["match_id","team","name","win","draw","lost"])
     matchdata.insert(0,'mnum',match_Num)
     matchdata.insert(1,'mdate',match_Date)
     print(matchdata)
@@ -82,3 +86,4 @@ pd_rows = gt_matchSummary(sheet_data)
 
 # DB Insert #
 insert_matchSummary(pd_rows, match_Num, match_Date)
+
